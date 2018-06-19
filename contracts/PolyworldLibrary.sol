@@ -1,3 +1,10 @@
+/*
+author: Kirill Kuzin (https://github.com/kirillkuzin)
+
+TODO:
+1) Добавить комментарии
+*/
+
 pragma solidity ^0.4.21;
 
 library PolyworldLibrary {
