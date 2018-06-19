@@ -10,12 +10,15 @@ TODO:
 pragma solidity ^0.4.21;
 
 import "./Finance.sol";
-
+import "./PolyworldLib.sol";
 
 contract Buildings is Finance {
 
+    using PolyworldLibrary;
+
     struct BuildingStruct {
         mapping(address => uint256) percentOwnership;
+        address[] owners;
         uint256 percentForSale;
         uint256 governmentPrice;
         uint256 rent;
@@ -24,7 +27,7 @@ contract Buildings is Finance {
     uint256 public buildingId;
 
     modifier isBuildingOwner(uint256 _buildingId, address _sender, uint256 _percent) {
-        require(buildings[_buildingId].percentOwnership[_sender] > _percent);
+        require(buildings[_buildingId].percentOwnership[_sender] >= _percent);
         _;
     }
 
@@ -111,11 +114,19 @@ contract Buildings is Finance {
     }
 
     function addBuildingPercentOwnership(uint256 _buildingId, address _owner, uint256 _percentOwnership) private {
-        buildings[_buildingId].percentOwnership[_owner] += _percentOwnership;
+        BuildingStruct building = buildings[_buildingId];
+        if (building.percentOwnership[_owner] == 0) {
+            building.owners.push(_owner);
+        }
+        building.percentOwnership[_owner] += _percentOwnership;
     }
 
     function subBuildingPercentOwnership(uint256 _buildingId, address _owner, uint256 _percentOwnership) private {
-        buildings[_buildingId].percentOwnership[_owner] -= _percentOwnership;
+        BuildingStruct building = buildings[_buildingId];
+        building.percentOwnership[_owner] -= _percentOwnership;
+        if (building.percentOwnership[_owner] == 0) {
+            building.owners = removeFromOwners(findOwnerIndex(building.owners, _owner), building.owners);
+        }
     }
 
 }
