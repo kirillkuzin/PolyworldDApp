@@ -23,8 +23,9 @@ contract Approves is Ownable {
         purchasesApprove[msg.sender][_seller][_buildId] = _percent;
     }
 
-    function setPurchaseApproveFromApp(address _buyer, address _seller, uint256 _buildId, uint256 _percent) public onlyOwner {
+    function setPurchaseApproveFromApp(address _buyer, address _seller, uint256 _buildId, uint256 _percent) public onlyOwner returns(bool) {
         purchasesApprove[_buyer][_seller][_buildId] = _percent;
+        return true;
     }
 
 }

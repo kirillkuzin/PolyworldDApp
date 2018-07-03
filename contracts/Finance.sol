@@ -17,7 +17,7 @@ contract Finance is Approves {
     /*
     Балансы пользователей
     */
-    mapping(address => uint256) rentBalances;
+    mapping(address => uint256) public rentBalances;
     /* Налоговый процент при продаже здания */
     uint256 public sellBuildingTaxPercent;
     /* Налоговый процент с игрового хода (ренты) */
@@ -26,17 +26,8 @@ contract Finance is Approves {
     /* PUBLIC */
 
     /*
-    description: конструктор
-    input: uint256 - налоговый процент при продаже здания; uint256 - налоговый процент с игрового хода (ренты)
-    */
-    function Finance(uint256 _sellBuildingTaxPercent, uint256 _taxInPercent) public {
-        sellBuildingTaxPercent = _sellBuildingTaxPercent;
-        taxInPercent = _taxInPercent;
-    }
-
-    /*
     description: забрать свой баланс из вне приложения
-    */    
+    */
     function getRentFromOutside() public {
         require(rentBalances[msg.sender] > 0);
         transferPwd(address(this), msg.sender, rentBalances[msg.sender]);
@@ -47,7 +38,7 @@ contract Finance is Approves {
     input: address - пользователь
     return: bool
     */
-    function getRentFromApp(address _account) public onlyOwner {
+    function getRentFromApp(address _account) public onlyOwner returns(bool) {
         require(rentBalances[_account] > 0);
         transferPwd(address(this), _account, rentBalances[_account]);
         return true;
@@ -60,12 +51,13 @@ contract Finance is Approves {
     input: address - пользователь; uint256 - рента; address[] - массив владельцев здания; uint256[] - проценты владения (пред. массива владельцев)
     */
     function stepTx(address _account, uint256 _rent, address[] _buildingOwners, uint256[] _percentOwnership) internal {
-        transferPwd(_account, address(this), _rent);
-        percentOfRent = _rent / 100;
-        tax = percentOfRent * taxInPercent;
-        ownersProfit = _rent - tax;
+        uint256 rent = _rent * 1 ether;
+        transferPwd(_account, address(this), rent);
+        uint256 percentOfRent = rent / 100;
+        uint256 tax = percentOfRent * taxInPercent;
+        uint256 ownersProfit = rent - tax;
         for (uint256 i = 0; i < _buildingOwners.length; i++) {
-            ownerProfit = percentOfRent * _percentOwnership[i];
+            uint256 ownerProfit = percentOfRent * _percentOwnership[i];
             rentBalances[_buildingOwners[i]] += ownerProfit;
         }
     }
@@ -75,7 +67,7 @@ contract Finance is Approves {
     input: address - новый владелец; uint256 - цена
     */
     function buyGovernmentBuildingTx(address _newOwner, uint256 _price) internal {
-        transferPwd(_newOwner, address(this), _price);
+        transferPwd(_newOwner, address(this), _price * 1 ether);
     }
 
     /*
@@ -83,9 +75,10 @@ contract Finance is Approves {
     input: address - новый владелец; address - старый владелец; uint256 - цена
     */
     function sellBuildingTx(address _newOwner, address _oldOwner, uint256 _price) internal {
-        uint256 tax = _price / 100 * sellBuildingTaxPercent;
-        transferPwd(_newOwner, _oldOwner, _price - tax);
-        transferPwd(_newOwner, address(this), tax)
+        uint256 price = _price * 1 ether;
+        uint256 tax = price / 100 * sellBuildingTaxPercent;
+        transferPwd(_newOwner, _oldOwner, price - tax);
+        transferPwd(_newOwner, address(this), tax);
     }
 
     /*
@@ -93,7 +86,7 @@ contract Finance is Approves {
     input: address - старый владелец; uint256 - цена
     */
     function sellBuildingToGovernmentTx(address _oldOwner, uint256 _price) internal {
-        uint256 sellPrice = _price / 2;
+        uint256 sellPrice = _price * 1 ether / 2;
         transferPwd(address(this), _oldOwner, sellPrice);
     }
 

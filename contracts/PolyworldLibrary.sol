@@ -17,12 +17,13 @@ library PolyworldLibrary {
         }
     }
 
-    function removeFromOwners(uint256 _index, address[] _owners) internal constant returns(address[]) {
+    function removeFromOwners(uint256 _index, address[] storage _owners) internal constant returns(address[]) {
         require(_index <= _owners.length);
         for (uint256 i = _index; i < _owners.length - 1; i++) {
-            _owners[_index] = _owners[_index + 1];
+            _owners[i] = _owners[i + 1];
         }
         _owners.length--;
+        return _owners;
     }
 
 }

@@ -8,11 +8,9 @@ TODO:
 pragma solidity ^0.4.21;
 
 import "./Finance.sol";
-import "./PolyworldLib.sol";
+import "./PolyworldLibrary.sol";
 
 contract Buildings is Finance {
-
-    using PolyworldLibrary;
 
     /* Структура здания */
     struct BuildingStruct {
@@ -34,7 +32,7 @@ contract Buildings is Finance {
     description: проверка владельца здания
     input: uint256 - id здания; address - пользователь; uint256 - процент владения
     */
-    modifier isBuildingOwner(uint256 _buildingId, address _sender, uint256 _percent) {
+    modifier isBuildingOwner(address _sender, uint256 _buildingId, uint256 _percent) {
         require(buildings[_buildingId].percentOwnership[_sender] >= _percent);
         _;
     }
@@ -55,12 +53,12 @@ contract Buildings is Finance {
     input: uint256 - цена продажи; uint256 - штраф; uint256 - долгота; uint256 - широта
     return: bool
     */
-    function addBuild(uint256 _sellPrice, uint256 _rent, uint256 _latitude, uint256 _longitude) public onlyOwner returns(bool result) {
-        addBuildingPercentForSale(_buildingId, 100);
-        buildings[_buildingId].governmentPrice = _sellPrice;
-        buildings[_buildingId].rent = _rent;
-        buildings[_buildingId].latitude = _latitude;
-        buildings[_buildingId].longitude = _longitude;
+    function addBuild(uint256 _sellPrice, uint256 _rent, uint256 _latitude, uint256 _longitude) public onlyOwner returns(bool) {
+        addBuildingPercentForSale(buildingId, 100);
+        buildings[buildingId].governmentPrice = _sellPrice;
+        buildings[buildingId].rent = _rent;
+        buildings[buildingId].latitude = _latitude;
+        buildings[buildingId].longitude = _longitude;
         buildingId++;
         return true;
     }
@@ -78,7 +76,7 @@ contract Buildings is Finance {
     input: uint256 - id здания; address - новый владелец; uint256 - покупаемый процент
     return: bool
     */
-    function buyGovernmentBuildingFromApp(uint256 _buildingId, address _newOwner, uint256 _percent) public onlyOwner isBuildingForGovernmentSale(_buildingId, _percent) returns(bool result) {
+    function buyGovernmentBuildingFromApp(uint256 _buildingId, address _newOwner, uint256 _percent) public onlyOwner isBuildingForGovernmentSale(_buildingId, _percent) returns(bool) {
         buyGovernmentBuilding(_buildingId, _newOwner, _percent);
         return true;
     }
@@ -98,7 +96,7 @@ contract Buildings is Finance {
     input: uint256 - id здания; uint256 - цена продажи; address - новый владелец; address - старый владелец; uint256 - продаваемый процент
     return: bool
     */
-    function sellBuildingFromApp(uint256 _buildingId, uint256 _sellPrice, address _newOwner, address _oldOwner, uint256 _percent) public onlyOwner returns(bool result) {
+    function sellBuildingFromApp(uint256 _buildingId, uint256 _sellPrice, address _newOwner, address _oldOwner, uint256 _percent) public onlyOwner returns(bool) {
         sellBuildingTx(_newOwner, _oldOwner, _sellPrice);
         addBuildingPercentOwnership(_buildingId, _newOwner, _percent);
         subBuildingPercentOwnership(_buildingId, _oldOwner, _percent);
@@ -118,7 +116,7 @@ contract Buildings is Finance {
     input: uint256 - id здания; address - старый владелец; uint256 - продаваемый процент
     return: bool
     */
-    function sellBuildingToGovernmentFromApp(uint256 _buildingId, address _oldOwner, uint256 _percent) public onlyOwner returns(bool result) {
+    function sellBuildingToGovernmentFromApp(uint256 _buildingId, address _oldOwner, uint256 _percent) public onlyOwner returns(bool) {
         sellBuildingToGovernment(_buildingId, _oldOwner, _percent);
         return true;
     }
@@ -130,7 +128,7 @@ contract Buildings is Finance {
     input: uint256 - id здания; address - новый владелец; uint256 - покупаемый процент
     */
     function buyGovernmentBuilding(uint256 _buildingId, address _newOwner, uint256 _percent) private {
-        buyGovernmentBuildingTx(buildings[_buildingId].governmentPrice);
+        buyGovernmentBuildingTx(_newOwner, buildings[_buildingId].governmentPrice);
         subBuildingPercentForSale(_buildingId, _percent);
         addBuildingPercentOwnership(_buildingId, _newOwner, _percent);
     }
@@ -181,7 +179,7 @@ contract Buildings is Finance {
         BuildingStruct building = buildings[_buildingId];
         building.percentOwnership[_owner] -= _percentOwnership;
         if (building.percentOwnership[_owner] == 0) {
-            building.owners = removeFromOwners(findOwnerIndex(building.owners, _owner), building.owners);
+            building.owners = PolyworldLibrary.removeFromOwners(PolyworldLibrary.findOwnerIndex(building.owners, _owner), building.owners);
         }
     }
 
