@@ -121,6 +121,24 @@ contract Buildings is Finance {
         return true;
     }
 
+    /*
+    description: возвращает процент владения по переданным id и адресу
+    input: uint256 - id здания; address - владелец
+    return: uint256
+    */
+    function getPercentOwnership(uint256 _buildingId, address _owner) public constant returns(uint256) {
+        return buildings[_buildingId].percentOwnership[_owner];
+    }
+
+    /*
+    description: возвращает массив владельцев здания по переданному id
+    input: uint256 - id здания
+    return: address[]
+    */
+    function getBuildingOwners(uint256 _buildingId) public constant returns(address[]) {
+        return buildings[_buildingId].owners;
+    }
+
     /* PRIVATE */
 
     /*
