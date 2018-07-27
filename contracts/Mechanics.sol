@@ -36,11 +36,11 @@ contract Mechanics is Auction {
         mapping(address => uint256) percentOwnership = building.percentOwnership;
         uint256[] storage percentOwnershipArray;
         for (uint256 i; i < owners.length; i++) {
-            percentOwnershipArray[_user].push(percentOwnership[owners[i]]);
+            percentOwnershipArray.push(percentOwnership[owners[i]]);
         }
         lastStepTime[_user] = now;
         pauseTime[_user] = randomTime(RANDOM_TIME_RANGE);
-        stepTx(_user, rent, owners, percentOwnershipArray[_user]);
+        stepTx(_user, rent, owners, percentOwnershipArray);
         return true;
     }
 
