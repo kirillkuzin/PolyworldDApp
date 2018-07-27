@@ -14,6 +14,7 @@ contract Buildings is Finance {
 
     /* Структура здания */
     struct BuildingStruct {
+        string title; // Название здания
         mapping(address => uint256) percentOwnership; // Процент владения
         address[] owners; // Массив владельцев
         uint256 percentForSale; // Доступный к покупке процент
@@ -50,10 +51,11 @@ contract Buildings is Finance {
 
     /*
     description: добавление нового здания в игру
-    input: uint256 - цена продажи; uint256 - штраф; uint256 - долгота; uint256 - широта
+    input: string - название здания; uint256 - цена продажи; uint256 - штраф; uint256 - долгота; uint256 - широта
     return: bool
     */
-    function addBuilding(uint256 _sellPrice, uint256 _rent, uint256 _latitude, uint256 _longitude) public onlyOwner returns(bool) {
+    function addBuilding(string _title, uint256 _sellPrice, uint256 _rent, uint256 _latitude, uint256 _longitude) public onlyOwner returns(bool) {
+        buildings[buildingId].title = _title;
         addBuildingPercentForSale(buildingId, 100);
         buildings[buildingId].governmentPrice = _sellPrice;
         buildings[buildingId].rent = _rent;
