@@ -53,7 +53,7 @@ contract Buildings is Finance {
     input: uint256 - цена продажи; uint256 - штраф; uint256 - долгота; uint256 - широта
     return: bool
     */
-    function addBuild(uint256 _sellPrice, uint256 _rent, uint256 _latitude, uint256 _longitude) public onlyOwner returns(bool) {
+    function addBuilding(uint256 _sellPrice, uint256 _rent, uint256 _latitude, uint256 _longitude) public onlyOwner returns(bool) {
         addBuildingPercentForSale(buildingId, 100);
         buildings[buildingId].governmentPrice = _sellPrice;
         buildings[buildingId].rent = _rent;
