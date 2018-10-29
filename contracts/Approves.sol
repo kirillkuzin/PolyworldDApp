@@ -3,6 +3,7 @@ author: Kirill Kuzin (https://github.com/kirillkuzin)
 
 TODO:
 1) Добавить комментарии
+2) Добавить забирание аппрува
 */
 
 pragma solidity ^0.4.21;

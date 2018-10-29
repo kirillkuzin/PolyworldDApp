@@ -32,8 +32,8 @@ contract Mechanics is Auction {
     function step(address _user, uint256 _buildingId) public onlyOwner correctStepTime(_user) returns(bool) {
         BuildingStruct building = buildings[_buildingId];
         uint256 rent = building.rent;
-        address[] owners = building.owners;
-        mapping(address => uint256) percentOwnership = building.percentOwnership;
+        uint256[] owners = building.owners;
+        mapping(uint256 => uint256) percentOwnership = building.percentOwnership;
         uint256[] storage percentOwnershipArray;
         for (uint256 i; i < owners.length; i++) {
             percentOwnershipArray.push(percentOwnership[owners[i]]);
