@@ -2,11 +2,12 @@
 author: Kirill Kuzin (https://github.com/kirillkuzin)
 */
 
-pragma solidity ^0.4.21;
+pragma solidity ^0.4.25;
 
 import "./Buildings.sol";
+import "./Finance.sol";
 
-contract Auction is Buildings {
+contract Auction is Finance {
 
 
 

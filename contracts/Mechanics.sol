@@ -7,7 +7,7 @@ TODO:
 3) Добавить комментарии
 */
 
-pragma solidity ^0.4.21;
+pragma solidity ^0.4.25;
 
 import "./Auction.sol";
 

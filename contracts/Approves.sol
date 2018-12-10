@@ -6,9 +6,9 @@ TODO:
 2) Добавить забирание аппрува
 */
 
-pragma solidity ^0.4.21;
+pragma solidity ^0.4.25;
 
-import "./Ownable.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 contract Approves is Ownable {
 

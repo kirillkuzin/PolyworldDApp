@@ -9,7 +9,7 @@ TODO:
 5) Добавить привязку адресов к id пользователей
 */
 
-pragma solidity ^0.4.21;
+pragma solidity ^0.4.25;
 
 import "./Approves.sol";
 
@@ -61,7 +61,7 @@ contract Finance is Approves {
     description: транзакция покупки здания у государства
     input: address - новый владелец; uint256 - цена
     */
-    function buyGovernmentBuildingTx(uint256 _newOwner, uint256 _price) internal {
+    function buyGovernmentBuildingTx(uint256 _newOwner, uint256 _price) public {
         // transferPwd(_newOwner, address(this), _price * 1 ether);
     }
 
@@ -69,7 +69,7 @@ contract Finance is Approves {
     description: транзакция продажи здания пользователю
     input: address - новый владелец; address - старый владелец; uint256 - цена
     */
-    function sellBuildingTx(uint256 _newOwner, uint256 _oldOwner, uint256 _price) internal {
+    function sellBuildingTx(uint256 _newOwner, uint256 _oldOwner, uint256 _price) public {
         uint256 price = _price * 1 ether;
         uint256 tax = price / 100 * sellBuildingTaxPercent;
         // transferPwd(_newOwner, _oldOwner, price - tax);
@@ -80,7 +80,7 @@ contract Finance is Approves {
     description: транзакция продажи здания государству
     input: address - старый владелец; uint256 - цена
     */
-    function sellBuildingToGovernmentTx(uint256 _oldOwner, uint256 _price) internal {
+    function sellBuildingToGovernmentTx(uint256 _oldOwner, uint256 _price) public {
         uint256 sellPrice = _price * 1 ether / 2;
         // transferPwd(address(this), _oldOwner, sellPrice);
     }
